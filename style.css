@@ -1,0 +1,742 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../../assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    font-family: Arial, sans-serif;
+}
+-------------------------------------- log in ------------------------------------------
+.login-shell {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-form {
+    width: 360px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 30px 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+h1 {
+    margin: 0 0 10px;
+    text-align: center;
+    color: #8b1e1e;
+}
+
+.login-form .tt {
+    display: block;
+    margin: 0 0 20px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 16px;
+    color: #333;
+    font-weight: 600;
+}
+
+.login-form span {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.login-form input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.select-control {
+    position: relative;
+    display: block;
+}
+
+.login-form select {
+    width: 100%;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 10px 40px 10px 12px;
+    appearance: none;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #fff;
+    color: #333;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.login-form select:hover {
+    border-color: #9ca3af;
+}
+
+.login-form select:focus-visible {
+    outline: none;
+    border-color: #b42318;
+    box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.14);
+}
+
+.select-control::after {
+    position: absolute;
+    top: 15px;
+    right: 16px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #6b7280;
+    border-bottom: 2px solid #6b7280;
+    content: "";
+    pointer-events: none;
+    transform: rotate(45deg);
+}
+
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #b42318;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.login-form button:hover {
+    background: #8d1b15;
+}
+
+.error-message {
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    background: rgba(255, 0, 0, 0.08);
+    color: #b91c1c;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0 16px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.line {
+    flex: 1;
+    height: 1px;
+    background: #d1d5db;
+}
+
+.divider-text {
+    white-space: nowrap;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.social-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 360px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    text-decoration: none;
+}
+
+.social-icon svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.social-icon.apple {
+    color: #111827;
+}
+
+.social-icon.google {
+    background: #fff;
+}
+
+.Sign-text{
+    text-align: center;
+    margin-top: 10px;
+}
+
+.Sign{
+    text-decoration: none;
+    margin-top: 10px;
+    color: #b91c1c;
+}
+
+.registration-page {
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 32px;
+    background: #e8efec;
+    color: #20312f;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.registration-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.9fr) minmax(470px, 1.1fr);
+    width: min(100%, 1040px);
+    min-height: 680px;
+    margin: auto;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 28px 76px rgba(24, 46, 41, 0.18);
+    animation: registration-arrive 500ms ease-out both;
+}
+
+.registration-aside {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    box-sizing: border-box;
+    padding: 38px 40px 34px;
+    color: #fff;
+    background-color: #173a36;
+    background-image: linear-gradient(180deg, rgba(13, 42, 39, 0.12), rgba(13, 42, 39, 0.86)), url("../../assets/background.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.registration-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    width: fit-content;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.registration-brand-mark {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    background: #b42318;
+    font-family: Georgia, serif;
+    font-size: 22px;
+}
+
+.registration-aside-copy {
+    max-width: 360px;
+    margin: auto 0;
+    padding: 70px 0;
+}
+
+.registration-aside-kicker,
+.registration-kicker {
+    margin: 0 0 16px;
+    color: #b8e3d0;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.registration-aside h2 {
+    margin: 0 0 20px;
+    color: #fff;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1.04;
+    text-align: left;
+}
+
+.registration-aside-copy > p:last-child {
+    max-width: 290px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.registration-aside-footer {
+    margin: 0;
+    padding-top: 17px;
+    border-top: 1px solid rgba(255, 255, 255, 0.38);
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.registration-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 48px 52px;
+}
+
+.registration-form {
+    width: 100%;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.registration-heading {
+    margin-bottom: 26px;
+}
+
+.registration-kicker {
+    margin-bottom: 10px;
+    color: #a3342d;
+}
+
+.registration-form h1 {
+    margin: 0 0 8px;
+    color: #20312f;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1.12;
+    text-align: left;
+}
+
+.registration-heading > p:last-child {
+    margin: 0;
+    color: #687874;
+    font-size: 14px;
+}
+
+.registration-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 14px;
+}
+
+.registration-fields label {
+    min-width: 0;
+    margin: 0;
+    color: #34413f;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.registration-form .field-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 0 7px;
+    color: #34413f;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.registration-form .field-label small {
+    color: #8b9994;
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.registration-fields label:last-child {
+    grid-column: 1 / -1;
+}
+
+.registration-form input,
+.registration-form select {
+    min-height: 46px;
+    border: 1px solid #d5ded9;
+    border-radius: 5px;
+    background-color: #f8faf9;
+    color: #20312f;
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.registration-form input {
+    padding: 11px 12px;
+}
+
+.registration-form input:hover,
+.registration-form select:hover {
+    border-color: #9eafa8;
+}
+
+.registration-form input:focus-visible,
+.registration-form select:focus-visible {
+    outline: none;
+    border-color: #24735e;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(36, 115, 94, 0.14);
+}
+
+.registration-form .select-control::after {
+    top: 17px;
+}
+
+.registration-form button {
+    min-height: 48px;
+    margin-top: 22px;
+    border-radius: 5px;
+    background: #b42318;
+    font-family: inherit;
+    font-size: 14px;
+    transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.registration-form button:hover {
+    background: #8d1b15;
+    transform: translateY(-1px);
+}
+
+.registration-form .Sign-text {
+    margin: 18px 0 0;
+    color: #687874;
+    font-size: 13px;
+}
+
+.registration-form .Sign {
+    color: #a3342d;
+    font-weight: 700;
+}
+
+.registration-form .form-message {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border-radius: 5px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.registration-form .form-message a {
+    color: inherit;
+    font-weight: 700;
+}
+
+@keyframes registration-arrive {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 780px) {
+    .registration-page {
+        align-items: flex-start;
+        padding: 18px;
+    }
+
+    .registration-layout {
+        grid-template-columns: 1fr;
+        min-height: 0;
+        max-width: 560px;
+    }
+
+    .registration-aside {
+        min-height: 280px;
+        padding: 24px 28px;
+        background-position: center 58%;
+    }
+
+    .registration-aside-copy {
+        padding: 32px 0 26px;
+    }
+
+    .registration-aside h2 {
+        font-size: 38px;
+    }
+
+    .registration-panel {
+        padding: 32px 28px 34px;
+    }
+}
+
+@media (max-width: 480px) {
+    .registration-page {
+        padding: 0;
+        background: #fff;
+    }
+
+    .registration-layout {
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .registration-aside {
+        min-height: 230px;
+        padding: 20px 22px;
+    }
+
+    .registration-aside-copy {
+        padding: 24px 0 20px;
+    }
+
+    .registration-aside h2 {
+        margin-bottom: 10px;
+        font-size: 32px;
+    }
+
+    .registration-aside-copy > p:last-child {
+        font-size: 13px;
+    }
+
+    .registration-aside-footer {
+        padding-top: 12px;
+        font-size: 9px;
+    }
+
+    .registration-panel {
+        padding: 28px 22px 30px;
+    }
+
+    .registration-form h1 {
+        font-size: 30px;
+    }
+
+    .registration-fields {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .registration-fields label:last-child {
+        grid-column: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .registration-layout {
+        animation: none;
+    }
+
+    .registration-form input,
+    .registration-form select,
+    .registration-form button {
+        transition: none;
+    }
+}
+
+.registration-page {
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: #f1f4f1;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.62)), url("../../assets/background.jpg");
+    background-position: center;
+    background-size: cover;
+    color: #303936;
+    font-family: Arial, sans-serif;
+}
+
+.registration-layout {
+    display: block;
+    width: min(100%, 430px);
+    min-height: 0;
+    box-sizing: border-box;
+    margin: auto;
+    padding: 34px;
+    overflow: visible;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 14px 42px rgba(36, 48, 40, 0.16);
+    animation: none;
+}
+
+.registration-form {
+    width: 100%;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.registration-heading {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.registration-form h1 {
+    margin: 0 0 8px;
+    color: #8b1e1e;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.registration-heading > p:last-child {
+    margin: 0;
+    color: #59635e;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.registration-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+.registration-fields label {
+    min-width: 0;
+    margin: 0;
+    color: #343b37;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.registration-form .field-label {
+    display: block;
+    margin: 0 0 7px;
+    color: #343b37;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.registration-form .field-label small {
+    margin-left: 5px;
+    color: #737d77;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.registration-form input,
+.registration-form select {
+    min-height: 44px;
+    border: 1px solid #d2d8d4;
+    border-radius: 7px;
+    background-color: #fff;
+    color: #303936;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.registration-form input {
+    padding: 10px 12px;
+}
+
+.registration-form input:focus-visible,
+.registration-form select:focus-visible {
+    outline: none;
+    border-color: #a33a32;
+    box-shadow: 0 0 0 3px rgba(163, 58, 50, 0.13);
+}
+
+.registration-form .select-control::after {
+    top: 16px;
+}
+
+.registration-form button {
+    min-height: 46px;
+    margin-top: 18px;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+.registration-form .Sign-text {
+    margin: 18px 0 0;
+    color: #59635e;
+    font-size: 14px;
+}
+
+.registration-form .Sign {
+    color: #8b1e1e;
+    font-weight: 700;
+}
+
+.registration-form .form-message {
+    margin-bottom: 18px;
+    padding: 11px 13px;
+    border-radius: 7px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+    .registration-page {
+        align-items: flex-start;
+        padding: 18px 14px;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.62)), url("../../assets/background.jpg");
+    }
+
+    .registration-layout {
+        padding: 28px 22px;
+    }
+}
+
+----------------------------------------- register -------------------------------------------
+
+.login-form select {
+			width: 100%;
+			box-sizing: border-box;
+			padding: 10px 12px;
+			border: 1px solid #d1d5db;
+			border-radius: 10px;
+			background: #fff;
+			font-size: 14px;
+		}
+
+		.form-message {
+			margin: 0 0 16px;
+			padding: 10px 12px;
+			border-radius: 10px;
+			font-weight: 600;
+		}
+
+		.form-message.error {
+			background: rgba(255, 0, 0, 0.08);
+			color: #b91c1c;
+		}
+
+		.form-message.success {
+			background: rgba(22, 101, 52, 0.1);
+			color: #166534;
+		}
+
+		.form-message ul {
+			margin: 0;
+			padding-left: 20px;
+		}
+
+		.login-form .field-label {
+			display: block;
+			margin: 0 0 7px;
+			color: #333;
+			font-weight: 600;
+		}
+
+		.login-form label {
+			margin-bottom: 14px;
+		}
