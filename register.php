@@ -10,6 +10,7 @@ $errors = [];
 $name = '';
 $email = '';
 $bloodType = '';
+$role = 'donor';
 $registered = false;
 $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -19,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$password = $_POST['password'] ?? '';
 	$passwordConfirmation = $_POST['password_confirmation'] ?? '';
 	$bloodType = $_POST['blood_type'] ?? '';
+	$role = $_POST['role'] ?? 'donor';
 	$token = $_POST['registration_token'] ?? '';
 
 	if (!hash_equals($_SESSION['registration_token'], $token)) {
@@ -29,14 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100) {
 		$errors[] = 'Enter a valid email address (up to 100 characters).';
-	} elseif (strtolower(substr(strrchr($email, '@') ?: '', 1)) !== 'gmail.com') {
-		$errors[] = 'Use a Gmail address ending in @gmail.com.';
+	} elseif ($role === 'donor' && strtolower(substr(strrchr($email, '@') ?: '', 1)) !== 'gmail.com') {
+		$errors[] = 'Donor accounts must use a Gmail address ending in @gmail.com.';
 	}
 	if (strlen($password) < 8) {
 		$errors[] = 'Your password must be at least 8 characters long.';
 	}
 	if ($password !== $passwordConfirmation) {
 		$errors[] = 'The passwords do not match.';
+	}
+	if (!in_array($role, ['donor', 'requester'], true)) {
+		$errors[] = 'Select a valid account type.';
 	}
 	if ($bloodType !== '' && !in_array($bloodType, $bloodTypes, true)) {
 		$errors[] = 'Select a valid blood type.';
@@ -49,13 +54,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	if (!$errors) {
 		try {
 			$statement = $pdo->prepare(
-				'INSERT INTO users (name, email, password, role, blood_type)
-				 VALUES (:name, :email, :password, \'donor\', :blood_type)'
+				'INSERT INTO users (name, email, password, `role`, blood_type)
+				 VALUES (:name, :email, :password, :role, :blood_type)'
 			);
 			$statement->execute([
 				'name' => $name,
 				'email' => $email,
 				'password' => password_hash($password, PASSWORD_DEFAULT),
+				'role' => $role,
 				'blood_type' => $bloodType !== '' ? $bloodType : null,
 			]);
 
@@ -96,7 +102,7 @@ function escape(string $value): string
 
 			<?php if ($registered): ?>
 				<div class="form-message success" role="status">
-					Your donor account has been created. <a href="login.php">Sign in</a> to continue.
+					Your <?= escape($role) ?> account has been created. <a href="login.php">Sign in</a> to continue.
 				</div>
 			<?php else: ?>
 				<?php if ($errors): ?>
@@ -119,6 +125,15 @@ function escape(string $value): string
 				<label>
 					<span class="field-label">Email address</span>
 					<input type="email" name="email" value="<?= escape($email) ?>" maxlength="100" autocomplete="email" placeholder="name@gmail.com" required>
+				</label>
+				<label>
+					<span class="field-label">Account type</span>
+					<div class="select-control">
+						<select name="role" required>
+							<option value="donor" <?= $role === 'donor' ? 'selected' : '' ?>>Donor</option>
+							<option value="requester" <?= $role === 'requester' ? 'selected' : '' ?>>Requester (hospital / representative)</option>
+						</select>
+					</div>
 				</label>
 				<label>
 					<span class="field-label">Blood type <small>Optional</small></span>

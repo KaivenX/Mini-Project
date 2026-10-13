@@ -72,12 +72,14 @@ BloodLink solves this by giving the blood bank a live view of stock levels, lett
 
 ### 6.1 Core Features (must have)
 
-- [ ] User registration and login (with role selection: Donor)
-- [ ] Role-based access control (each role sees/does different things)
+- [x] User registration and login (with role selection: Donor or Requester; Admin accounts are managed by an admin)
+- [x] Role-based access control for Admin, Donor, and Requester
 - [ ] Data management (Create, Read, Update, Delete) for donations, requests, and stock
 - [ ] Blood stock inventory tracking by blood type, auto-updated on donation/fulfilment
 - [ ] Donation appointment booking with eligibility check (based on last donation date)
-- [ ] Blood request submission with urgency level (Critical / Normal) and admin approval workflow
+- [x] Blood request submission with urgency level (Critical / Normal), requester tracking, and admin approval/rejection/fulfilment workflow
+
+Existing databases must be upgraded by running [`bloodlink/migrations/20261013_requester_role.sql`](./bloodlink/migrations/20261013_requester_role.sql) in MySQL Workbench. New installations can use the current `bloodlink/database.sql`.
 
 ### 6.2 Extra Features (nice to have)
 
@@ -105,7 +107,7 @@ BloodLink solves this by giving the blood bank a live view of stock levels, lett
 | Donations | Admin, Donor (booking) | Admin, Donor (own) | Admin | Admin |
 | Donation Drives | Admin | Admin, Donor, Requester, Guest | Admin | Admin |
 | Blood Stock | Admin (auto via donations/requests) | Admin, Requester, Guest | Admin | Admin |
-| Blood Requests | Requester | Admin, Requester (own) | Admin | Admin |
+| Blood Requests | Requester | Admin, Requester (own) | Admin (status) | — |
 
 ---
 

@@ -3,61 +3,51 @@ session_start();
 require_once __DIR__ . '/bloodlink/config/db.php';
 
 $error = '';
+$email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
+    $email = trim((string) ($_POST['email'] ?? ''));
+    $password = (string) ($_POST['password'] ?? '');
 
-    $user = null;
-
-    if ($pdo) {
-        $statement = $pdo->prepare('SELECT * FROM users WHERE email = :email LIMIT 1');
-        $statement->execute(['email' => $email]);
-        $user = $statement->fetch(PDO::FETCH_ASSOC);
-
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user'] = [
-                'id' => (int) $user['user_id'],
-                'email' => $user['email'],
-                'role' => $user['role'],
-            ];
-
-            $redirect = ($user['role'] === 'admin')
-                ? 'bloodlink/admin/dashboard.php'
-                : 'donor/dashboard.php';
-
-            header('Location: ' . $redirect);
-            exit;
-        }
+    if (!($pdo instanceof PDO)) {
+        $error = 'Cannot sign in because the database is unavailable. Start MySQL and check bloodlink/config/db.php.';
     } else {
-        $demoUsers = [
-            'admin@bloodlink.com' => [
-                'password' => password_hash('password', PASSWORD_DEFAULT),
-                'role' => 'admin',
-            ],
-            'donor@bloodlink.com' => [
-                'password' => password_hash('password', PASSWORD_DEFAULT),
-                'role' => 'donor',
-            ],
-        ];
+        try {
+            $statement = $pdo->prepare('SELECT user_id, name, email, password, `role` FROM users WHERE email = :email LIMIT 1');
+            $statement->execute(['email' => $email]);
+            $user = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if (isset($demoUsers[$email]) && password_verify($password, $demoUsers[$email]['password'])) {
-            $_SESSION['user'] = [
-                'id' => 1,
-                'email' => $email,
-                'role' => $demoUsers[$email]['role'],
-            ];
+            if ($user && password_verify($password, $user['password'])) {
+                session_regenerate_id(true);
+                $_SESSION['user'] = [
+                    'id' => (int) $user['user_id'],
+                    'name' => $user['name'],
+                    'email' => $user['email'],
+                    'role' => $user['role'],
+                ];
 
-            $redirect = ($demoUsers[$email]['role'] === 'admin')
-                ? 'bloodlink/admin/dashboard.php'
-                : 'donor/dashboard.php';
+                $redirect = match ($user['role']) {
+                    'admin' => 'bloodlink/admin/dashboard.php',
+                    'requester' => 'requester/dashboard.php',
+                    'donor' => 'donor/dashboard.php',
+                    default => null,
+                };
 
-            header('Location: ' . $redirect);
-            exit;
+                if ($redirect === null) {
+                    unset($_SESSION['user']);
+                    $error = 'This account has an unsupported role. Contact an administrator.';
+                } else {
+                    header('Location: ' . $redirect);
+                    exit;
+                }
+            } else {
+                $error = 'Invalid email or password.';
+            }
+        } catch (PDOException $exception) {
+            error_log('BloodLink login database error: ' . $exception->getMessage());
+            $error = 'Sign-in failed because of a database setup problem. Check that the bloodlink database and users table exist.';
         }
     }
-
-    $error = 'Invalid email or password.';
 }
 ?>
 <!DOCTYPE html>
@@ -70,22 +60,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="bloodlink/Styling/css/style.css">
 </head>
 
-<body>
+<body class="login-page">
     <div class="login-shell">
         <?php if ($error): ?>
             <p class="error-message">
-                <?= htmlspecialchars($error) ?>
+                <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
             </p>
         <?php endif; ?>
 
         <form method="POST" action="login.php" class="login-form">
             <h1>Welcome Back </h1>
-            <span class="tt">Sign in to manage your appointments & donations</span>
+            <span class="tt">Sign in to manage donations or blood requests</span>
             <label>
-                <input type="email" name="email" placeholder="Email" required>
+                <input type="email" name="email" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" placeholder="Email" autocomplete="username" required>
             </label>
             <label>
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password" placeholder="Password" autocomplete="current-password" required>
             </label>
             <button type="submit">Log In</button>
             <div class="divider">
