@@ -25,9 +25,9 @@ $successMessage = '';
 if ($pdo instanceof PDO) {
     try {
         $userStatement = $pdo->query(
-            'SELECT user_id, name, email, role, blood_type, last_donation_date
+            'SELECT user_id, name, email, `role`, blood_type, last_donation_date
              FROM users
-             ORDER BY role ASC, name ASC'
+             ORDER BY `role` ASC, name ASC'
         );
         $users = $userStatement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -59,12 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($name === '' || $email === '' || $password === '') {
             $errorMessage = 'Please complete the name, email, and password fields.';
-        } elseif (!in_array($role, ['admin', 'donor'], true)) {
+        } elseif (!in_array($role, ['admin', 'donor', 'requester'], true)) {
             $errorMessage = 'Choose a valid user role.';
         } else {
             try {
                 $insertStatement = $pdo->prepare(
-                    'INSERT INTO users (name, email, password, role, blood_type)
+                    'INSERT INTO users (name, email, password, `role`, blood_type)
                      VALUES (:name, :email, :password, :role, :blood_type)'
                 );
               $insertStatement->execute([
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userId = (int) ($_POST['user_id'] ?? 0);
         $role = trim((string) ($_POST['role'] ?? 'donor'));
 
-        if ($userId <= 0 || !in_array($role, ['admin', 'donor'], true)) {
+        if ($userId <= 0 || !in_array($role, ['admin', 'donor', 'requester'], true)) {
             $errorMessage = 'Please select a valid user and role.';
         } elseif ($userId === $adminId) {
             $errorMessage = 'You cannot change the current admin account role.';
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $updateStatement = $pdo->prepare(
                     'UPDATE users
-                     SET role = :role
+                     SET `role` = :role
                      WHERE user_id = :user_id'
                 );
                 $updateStatement->execute([
@@ -134,129 +134,10 @@ $escape = static fn ($value): string => htmlspecialchars((string) $value, ENT_QU
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users | BloodLink</title>
-    <style>
-        :root {
-            color-scheme: light;
-            --ink: #20312f;
-            --muted: #687975;
-            --line: #dce6e2;
-            --paper: #fff;
-            --wash: #f3f7f5;
-            --green: #173a36;
-            --red: #b42318;
-            --soft-red: #f7e2e1;
-            --soft-green: #dff3ea;
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: var(--wash);
-            color: var(--ink);
-            font-family: "Segoe UI", Arial, sans-serif;
-        }
-        a { color: inherit; }
-        .page-shell {
-            width: min(1180px, calc(100% - 40px));
-            margin: 0 auto;
-            padding: 42px 0 56px;
-        }
-        .page-top { margin-bottom: 24px; }
-        .eyebrow { margin: 0 0 8px; color: var(--red); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-        h1, h2, h3, p { margin-top: 0; }
-        h1 { margin-bottom: 7px; color: var(--green); font-size: 31px; }
-        .page-copy { margin: 0; color: var(--muted); font-size: 14px; }
-        .alert {
-            margin: 0 0 16px;
-            padding: 12px 14px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        .alert.error { background: var(--soft-red); border: 1px solid #ebc5c2; color: #7a2524; }
-        .alert.success { background: var(--soft-green); border: 1px solid #bae4cf; color: #1e4d3a; }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-        .panel {
-            background: var(--paper);
-            border: 1px solid var(--line);
-            border-radius: 10px;
-        }
-        .stat-card { padding: 20px 18px; }
-        .stat-label { display: block; margin-bottom: 12px; color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; }
-        .stat-value { display: block; color: var(--green); font-size: 22px; font-weight: 800; }
-        .content-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
-            gap: 18px;
-            margin-top: 18px;
-        }
-        .table-panel, .form-panel { padding: 20px; }
-        .section-title { margin: 0 0 18px; color: var(--green); font-size: 18px; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-        th, td {
-            padding: 12px 10px;
-            border-bottom: 1px solid var(--line);
-            text-align: left;
-            vertical-align: top;
-        }
-        th { color: var(--muted); font-size: 12px; text-transform: uppercase; }
-        .badge {
-            display: inline-block;
-            padding: 5px 9px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-        .badge.admin { background: #edf4f1; color: var(--green); }
-        .badge.donor { background: #f7e2e1; color: var(--red); }
-        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .button, button, select, input {
-            font: inherit;
-        }
-        .button, button {
-            border: 1px solid transparent;
-            border-radius: 7px;
-            padding: 9px 12px;
-            cursor: pointer;
-            background: var(--green);
-            color: #fff;
-            font-weight: 700;
-        }
-        .button.secondary {
-            background: #fff;
-            border-color: var(--line);
-            color: var(--green);
-        }
-        .button.danger {
-            background: var(--red);
-        }
-        form { display: grid; gap: 12px; }
-        label { display: grid; gap: 6px; font-size: 13px; color: var(--ink); }
-        input, select {
-            width: 100%;
-            padding: 10px 11px;
-            border: 1px solid var(--line);
-            border-radius: 7px;
-            background: #fff;
-        }
-        .inline-row { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-        @media (max-width: 820px) {
-            .stats-grid, .content-grid, .inline-row { grid-template-columns: 1fr; }
-            th, td { padding-left: 6px; }
-        }
-    </style>
+    <link rel="stylesheet" href="../Styling/css/style.css">
+    
 </head>
-<body>
+<body class="page-admin-users">
     <main class="page-shell">
         <header class="page-top">
             <p class="eyebrow">Admin controls</p>
@@ -316,16 +197,17 @@ $escape = static fn ($value): string => htmlspecialchars((string) $value, ENT_QU
                                     <td>
                                         <div class="actions">
                                             <?php if ((int) ($user['user_id'] ?? 0) !== $adminId): ?>
-                                                <form method="POST" style="display:inline;" onsubmit="return confirm('Update this user role?');">
+                                                <form method="POST" class="inline-form" onsubmit="return confirm('Update this user role?');">
                                                     <input type="hidden" name="action" value="update_role">
                                                     <input type="hidden" name="user_id" value="<?= (int) ($user['user_id'] ?? 0) ?>">
                                                     <select name="role" aria-label="Role">
                                                         <option value="donor" <?= (($user['role'] ?? 'donor') === 'donor') ? 'selected' : '' ?>>Donor</option>
                                                         <option value="admin" <?= (($user['role'] ?? 'donor') === 'admin') ? 'selected' : '' ?>>Admin</option>
+                                                        <option value="requester" <?= (($user['role'] ?? 'donor') === 'requester') ? 'selected' : '' ?>>Requester</option>
                                                     </select>
                                                     <button type="submit" class="button secondary">Save</button>
                                                 </form>
-                                                <form method="POST" style="display:inline;" onsubmit="return confirm('Delete this user?');">
+                                                <form method="POST" class="inline-form" onsubmit="return confirm('Delete this user?');">
                                                     <input type="hidden" name="action" value="delete_user">
                                                     <input type="hidden" name="user_id" value="<?= (int) ($user['user_id'] ?? 0) ?>">
                                                     <button type="submit" class="button danger">Delete</button>
@@ -362,6 +244,7 @@ $escape = static fn ($value): string => htmlspecialchars((string) $value, ENT_QU
                             <select name="role">
                                 <option value="donor">Donor</option>
                                 <option value="admin">Admin</option>
+                                <option value="requester">Requester</option>
                             </select>
                         </label>
                         <label>
